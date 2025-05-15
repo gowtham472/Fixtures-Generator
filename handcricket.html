@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hand Cricket League</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #fffbe6 0%, #ffe5e5 100%);
+        min-height: 100vh;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(255, 0, 0, 0.12);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 24px;
+        border: 1.5px solid #ffd600;
+      }
+      .icon {
+        color: #ffd600;
+        margin-right: 0.5rem;
+      }
+      input,
+      select {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1.5px solid #ffd600;
+        outline: none;
+        color: #b91c1c;
+      }
+      input:focus,
+      select:focus {
+        background: #fffde7;
+        box-shadow: 0 0 0 2px #ffd600;
+      }
+      .btn-main {
+        background: #ff0000;
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        transition: background 0.2s;
+      }
+      .btn-main:hover {
+        background: #ba0025;
+        color: #fff;
+      }
+      .btn-reset {
+        background: #ff1744;
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        transition: background 0.2s;
+      }
+      .btn-reset:hover {
+        background: #ffd600;
+        color: #b91c1c;
+      }
+      .highlight {
+        color: #ff1744;
+        font-weight: 700;
+      }
+      .yellow {
+        color: #ffd600;
+      }
+      .red {
+        color: #ff1744;
+      }
+      .white {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body class="text-red-900 p-2 sm:p-4">
+    <div class="max-w-3xl mx-auto glass p-4 sm:p-8 mt-4 sm:mt-10 shadow-xl">
+      <h1
+        class="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8 text-center flex items-center justify-center gap-2 tracking-tight yellow"
+      >
+        <i class="fa-solid fa-baseball-bat-ball icon text-3xl sm:text-5xl"></i>
+        CPL
+      </h1>
+      <p class="text-base sm:text-lg text-center font-bold">By CSE B Team</p>
+      <p class="text-base sm:text-lg mb-4 sm:mb-6 text-center font-normal">
+        Welcome to the CPL Fixture Generator! This tool will help you create
+        fixtures for the CPL (Cricket Premier League) tournament. Follow the
+        instructions below to get started and create a comprehensive schedule
+        for the CPL!
+      </p>
+
+      <div id="setupSection">
+        <label
+          class="block mb-2 text-base sm:text-lg font-semibold flex items-center red"
+        >
+          <i class="fa-solid fa-users icon"></i>
+          Enter Number of Teams:
+        </label>
+        <input
+          id="teamCount"
+          type="number"
+          min="2"
+          max="20"
+          class="p-3 rounded-xl w-full max-w-xs mb-4"
+          placeholder="2-20"
+        />
+        <button
+          onclick="generateTeamInputs()"
+          class="btn-main px-4 sm:px-6 py-2 rounded-xl shadow transition-all w-full sm:w-auto"
+        >
+          <i class="fa-solid fa-arrow-right icon"></i>Next
+        </button>
+        <div id="teamInputs" class="mt-4 space-y-2"></div>
+      </div>
+
+      <div id="fixtureSection" class="hidden mt-8 sm:mt-10">
+        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center yellow">
+          <i class="fa-solid fa-calendar-days icon"></i>Fixtures
+        </h2>
+        <ul id="fixturesList" class="space-y-3"></ul>
+      </div>
+
+      <div id="playoffsSection" class="mt-8 sm:mt-10 hidden">
+        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center yellow">
+          <i class="fa-solid fa-trophy icon"></i>Playoffs
+        </h2>
+        <ul id="playoffsList" class="space-y-4"></ul>
+      </div>
+
+      <div id="pointsSection" class="hidden mt-8 sm:mt-10">
+        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center yellow">
+          <i class="fa-solid fa-table-list icon"></i>Points Table
+        </h2>
+        <div class="overflow-x-auto">
+          <table
+            class="w-full border-separate border-spacing-y-2 text-xs sm:text-base"
+          >
+            <thead>
+              <tr class="bg-yellow-400/80 text-red-900">
+                <th class="px-2 sm:px-3 py-2 rounded-l-xl">Team</th>
+                <th class="px-2 sm:px-3 py-2">P</th>
+                <th class="px-2 sm:px-3 py-2">W</th>
+                <th class="px-2 sm:px-3 py-2">L</th>
+                <th class="px-2 sm:px-3 py-2 rounded-r-xl">Pts</th>
+              </tr>
+            </thead>
+            <tbody id="pointsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-6 sm:mt-8 text-center">
+        <button
+          onclick="resetLeague()"
+          class="btn-reset px-4 sm:px-6 py-2 rounded-xl shadow transition-all w-full sm:w-auto"
+        >
+          <i class="fa-solid fa-rotate-left icon"></i>Reset League
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let teams = [];
+      let fixtures = [];
+      let points = {};
+      let playoffs = [];
+      let playoffsResults = {};
+
+      window.onload = () => {
+        const saved = localStorage.getItem("leagueData");
+        if (saved) {
+          const data = JSON.parse(saved);
+          teams = data.teams;
+          fixtures = data.fixtures;
+          points = data.points;
+          playoffs = data.playoffs;
+          playoffsResults = data.playoffsResults;
+
+          showFixtures();
+          showPointsTable();
+          document.getElementById("setupSection").classList.add("hidden");
+          document.getElementById("fixtureSection").classList.remove("hidden");
+          document.getElementById("pointsSection").classList.remove("hidden");
+          if (playoffs && playoffs.length > 0) {
+            document
+              .getElementById("playoffsSection")
+              .classList.remove("hidden");
+            showPlayoffs();
+          }
+        } else {
+          document.getElementById("setupSection").classList.remove("hidden");
+          document.getElementById("fixtureSection").classList.add("hidden");
+          document.getElementById("pointsSection").classList.add("hidden");
+          document.getElementById("playoffsSection").classList.add("hidden");
+        }
+      };
+
+      function generateTeamInputs() {
+        const count = parseInt(document.getElementById("teamCount").value);
+        const inputContainer = document.getElementById("teamInputs");
+        inputContainer.innerHTML = "";
+
+        // Predefined IPL team names (15)
+        const iplTeams = [
+          "CSK", // Chennai Super Kings
+          "MI", // Mumbai Indians
+          "RCB", // Royal Challengers Bangalore
+          "KKR", // Kolkata Knight Riders
+          "SRH", // Sunrisers Hyderabad
+          "RR", // Rajasthan Royals
+          "DC", // Delhi Capitals
+          "PBKS", // Punjab Kings
+          "LSG", // Lucknow Super Giants
+          "GT", // Gujarat Titans
+          "KTK", // Kochi Tuskers Kerala
+          "RPS", // Rising Pune Supergiants
+          "DCC", // Deccan Chargers
+          "KXIP", // Kings XI Punjab
+          "DD", // Delhi Daredevils
+        ];
+
+        for (let i = 0; i < count; i++) {
+          const value = iplTeams[i] ? `value="${iplTeams[i]}"` : "";
+          inputContainer.innerHTML += `
+            <input type="text" placeholder="Team ${
+              i + 1
+            }" class="teamName p-3 rounded-xl w-full mb-2" ${value} /><br/>
+          `;
+        }
+        inputContainer.innerHTML += `<button onclick="startLeague()" class="btn-main mt-4 px-4 sm:px-6 py-2 rounded-xl shadow hover:opacity-90 transition-all w-full sm:w-auto"><i class='fa-solid fa-play icon'></i>Start League</button>`;
+      }
+
+      function startLeague() {
+        const nameInputs = document.querySelectorAll(".teamName");
+        teams = Array.from(nameInputs)
+          .map((input) => input.value.trim())
+          .filter((name) => name);
+        if (teams.length < 2)
+          return alert("Enter at least 2 valid team names.");
+
+        generateFixtures();
+        initPointsTable();
+        saveData();
+        showFixtures();
+        showPointsTable();
+
+        document.getElementById("setupSection").classList.add("hidden");
+        document.getElementById("fixtureSection").classList.remove("hidden");
+        document.getElementById("pointsSection").classList.remove("hidden");
+      }
+
+function generateFixtures() {
+  fixtures = [];
+  for (let i = 0; i < teams.length; i++) {
+    for (let j = i + 1; j < teams.length; j++) {
+      fixtures.push({ teamA: teams[i], teamB: teams[j], winner: null });
+    }
+  }
+  // Shuffle the fixtures for randomness
+  fixtures = shuffleArray(fixtures);
+}
+
+      function initPointsTable() {
+        points = {};
+        teams.forEach((team) => {
+          points[team] = { played: 0, won: 0, lost: 0, pts: 0 };
+        });
+      }
+
+      function showFixtures() {
+        const container = document.getElementById("fixturesList");
+        container.innerHTML = "";
+
+        fixtures.forEach((match, index) => {
+  const { teamA, teamB, winner } = match;
+  container.innerHTML += `
+    <li class="p-2 sm:p-4 glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="flex flex-col sm:flex-row sm:items-center w-full gap-2">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-user-group icon"></i>
+          <span class="highlight">${teamA}</span>
+          <span class="yellow font-bold">vs</span>
+          <span class="highlight">${teamB}</span>
+        </span>
+        ${
+          winner
+            ? `<span class="yellow font-bold flex items-center"><i class="fa-solid fa-crown icon"></i>Winner: ${winner}</span>`
+            : `
+            <select id="winner-${index}" class="p-2 rounded-xl w-full sm:w-auto">
+              <option disabled selected>Select Winner</option>
+              <option value="${teamA}">${teamA}</option>
+              <option value="${teamB}">${teamB}</option>
+            </select>
+          `
+        }
+      </div>
+      ${
+        !winner
+          ? `<div class="flex sm:hidden mt-2">
+                <button onclick="submitResult(${index})" class="btn-main w-full px-3 py-4 rounded-xl hover:opacity-90 transition-all text-sm ">Submit</button>
+             </div>
+             <div class="hidden sm:flex">
+                <button onclick="submitResult(${index})" class="btn-main px-3 py-3 rounded-xl hover:opacity-90 transition-all text-sm">Submit</button>
+             </div>`
+          : ""
+      }
+    </li>
+  `;
+});
+      }
+
+function shuffleArray(array) {
+  let arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+      function generatePlayoffs() {
+        const sortedTeams = [...teams].sort(
+          (a, b) => points[b].pts - points[a].pts
+        );
+        const top4 = sortedTeams.slice(0, 4);
+
+        playoffs = [
+          { name: "Qualifier 1", teamA: top4[0], teamB: top4[1], winner: null },
+          { name: "Eliminator", teamA: top4[2], teamB: top4[3], winner: null },
+          { name: "Qualifier 2", teamA: null, teamB: null, winner: null },
+          { name: "Final", teamA: null, teamB: null, winner: null },
+        ];
+        playoffsResults = {};
+        saveData();
+      }
+
+      function showPlayoffs() {
+        const container = document.getElementById("playoffsList");
+        container.innerHTML = "";
+
+        playoffs.forEach((match, index) => {
+          if (index === 2 && playoffs[1].winner && playoffs[0].loser) {
+            match.teamA = playoffs[1].winner;
+            match.teamB = playoffs[0].loser;
+          }
+          if (index === 3 && playoffs[0].winner && playoffs[2].winner) {
+            match.teamA = playoffs[0].winner;
+            match.teamB = playoffs[2].winner;
+          }
+
+          const { name, teamA, teamB, winner } = match;
+          if (!teamA || !teamB) {
+            container.innerHTML += `<li class="p-2 sm:p-4 glass"><strong>${name}</strong>: Waiting for result...</li>`;
+            return;
+          }
+
+          container.innerHTML += `
+            <li class="p-2 sm:p-4 glass flex flex-col sm:flex-row items-start sm:items-center justify-between">
+              <span><strong>${name}</strong>: <span class="highlight">${teamA}</span> <span class="yellow font-bold">vs</span> <span class="highlight">${teamB}</span></span>
+              ${
+                winner
+                  ? `<span class="yellow font-bold flex items-center"><i class="fa-solid fa-crown icon"></i>Winner: ${winner}</span>`
+                  : `
+                <div class="flex flex-col sm:flex-row gap-2 mt-2 sm:mt-0">
+                  <select id="playoff-winner-${index}" class="p-2 rounded-xl">
+                    <option disabled selected>Select Winner</option>
+                    <option value="${teamA}">${teamA}</option>
+                    <option value="${teamB}">${teamB}</option>
+                  </select>
+                  <button onclick="submitPlayoffResult(${index})" class="btn-main px-3 py-1 rounded-xl hover:opacity-90 transition-all"><i class="fa-solid fa-check icon"></i>Submit</button>
+                </div>`
+              }
+            </li>
+          `;
+        });
+
+        saveData();
+      }
+
+      function submitPlayoffResult(index) {
+        const match = playoffs[index];
+        const select = document.getElementById(`playoff-winner-${index}`);
+        const selectedWinner = select.value;
+        if (!selectedWinner) return alert("Please select a winner");
+
+        match.winner = selectedWinner;
+
+        if (index === 0 || index === 1) {
+          match.loser =
+            match.teamA === selectedWinner ? match.teamB : match.teamA;
+        }
+
+        showPlayoffs();
+      }
+
+      function submitResult(index) {
+        const winner = document.getElementById(`winner-${index}`).value;
+        if (!winner) return alert("Select a winner.");
+        const loser =
+          fixtures[index].teamA === winner
+            ? fixtures[index].teamB
+            : fixtures[index].teamA;
+
+        fixtures[index].winner = winner;
+        points[winner].played++;
+        points[winner].won++;
+        points[winner].pts += 2;
+
+        points[loser].played++;
+        points[loser].lost++;
+
+        saveData();
+        showFixtures();
+        showPointsTable();
+        if (fixtures.every((f) => f.winner)) {
+          generatePlayoffs();
+          document.getElementById("playoffsSection").classList.remove("hidden");
+          showPlayoffs();
+        }
+      }
+
+      function showPointsTable() {
+        const table = document.getElementById("pointsTable");
+        const sortedTeams = [...teams].sort(
+          (a, b) => points[b].pts - points[a].pts
+        );
+        table.innerHTML = sortedTeams
+          .map((team) => {
+            const p = points[team];
+            return `
+              <tr class="glass text-red-900 text-center">
+                <td class="px-2 sm:px-3 py-2 highlight">${team}</td>
+                <td class="px-2 sm:px-3 py-2">${p.played}</td>
+                <td class="px-2 sm:px-3 py-2">${p.won}</td>
+                <td class="px-2 sm:px-3 py-2">${p.lost}</td>
+                <td class="px-2 sm:px-3 py-2 yellow font-bold">${p.pts}</td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      function showChampion() {
+        const champion = playoffs[3].winner;
+        if (champion) {
+          alert(`Champion: ${champion}`);
+        } else {
+          alert("Final match not yet played.");
+        }
+      }
+
+      function resetLeague() {
+        if (confirm("Reset the league? All data will be lost.")) {
+          localStorage.removeItem("leagueData");
+          location.reload();
+        }
+      }
+
+      function saveData() {
+        localStorage.setItem(
+          "leagueData",
+          JSON.stringify({
+            teams,
+            fixtures,
+            points,
+            playoffs,
+            playoffsResults,
+          })
+        );
+      }
+    </script>
+  </body>
+</html>
