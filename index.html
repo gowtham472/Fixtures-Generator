@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cricket Premier League</title>
     <link rel="icon" href="./Cricket Premier League Logo.png" />
-    <meta name="description" content="CPL Fixture Generator Tool by CSE B from Sri Sairam Engineering College" />
+    <meta
+      name="description"
+      content="CPL Fixture Generator Tool by CSE B from Sri Sairam Engineering College"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
@@ -15,7 +18,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    
+
     <style>
       body {
         font-family: "Poppins", sans-serif;
@@ -265,16 +268,18 @@
         document.getElementById("pointsSection").classList.remove("hidden");
       }
 
-function generateFixtures() {
-  fixtures = [];
-  for (let i = 0; i < teams.length; i++) {
-    for (let j = i + 1; j < teams.length; j++) {
-      fixtures.push({ teamA: teams[i], teamB: teams[j], winner: null });
-    }
-  }
-  // Shuffle the fixtures for randomness
-  fixtures = shuffleArray(fixtures);
-}
+      function generateFixtures() {
+        fixtures = [];
+        // Generate home and away (reverse) fixtures
+        for (let i = 0; i < teams.length; i++) {
+          for (let j = i + 1; j < teams.length; j++) {
+            fixtures.push({ teamA: teams[i], teamB: teams[j], winner: null });
+            fixtures.push({ teamA: teams[j], teamB: teams[i], winner: null }); // reverse fixture
+          }
+        }
+        // Shuffle the fixtures for randomness
+        fixtures = shuffleArray(fixtures);
+      }
 
       function initPointsTable() {
         points = {};
@@ -288,8 +293,8 @@ function generateFixtures() {
         container.innerHTML = "";
 
         fixtures.forEach((match, index) => {
-  const { teamA, teamB, winner } = match;
-  container.innerHTML += `
+          const { teamA, teamB, winner } = match;
+          container.innerHTML += `
     <li class="p-2 sm:p-4 glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       <div class="flex flex-col sm:flex-row sm:items-center w-full gap-2">
         <span class="flex items-center gap-2">
@@ -322,20 +327,20 @@ function generateFixtures() {
       }
     </li>
   `;
-});
+        });
       }
 
-function shuffleArray(array) {
-  let arr = array.slice();
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+      function shuffleArray(array) {
+        let arr = array.slice();
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
       function generatePlayoffs() {
         const sortedTeams = [...teams].sort(
-          (a, b) => points[b].pts - points[a].pts
+          (a, b) => points[b].pts - points[a].pts,
         );
         const top4 = sortedTeams.slice(0, 4);
 
@@ -437,7 +442,7 @@ function shuffleArray(array) {
       function showPointsTable() {
         const table = document.getElementById("pointsTable");
         const sortedTeams = [...teams].sort(
-          (a, b) => points[b].pts - points[a].pts
+          (a, b) => points[b].pts - points[a].pts,
         );
         table.innerHTML = sortedTeams
           .map((team) => {
@@ -480,7 +485,7 @@ function shuffleArray(array) {
             points,
             playoffs,
             playoffsResults,
-          })
+          }),
         );
       }
     </script>
