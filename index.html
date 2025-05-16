@@ -131,6 +131,10 @@
         </button>
         <div id="teamInputs" class="mt-4 space-y-2"></div>
       </div>
+      <div onclick="window.location.href = './team-generator.html'" class="text-center mt-8 sm:mt-10 bg-[#0f172a] rounded-xl p-4 shadow-lg cursor-pointer w-200 mx-auto">
+        <i class="fa-solid fa-users icon"></i>
+        <h1 class="text-xl sm:text-2xl font-bold mb-4 yellow cursor-pointer">Generate Teams</h1>
+      </div>
 
       <div id="fixtureSection" class="hidden mt-8 sm:mt-10">
         <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center yellow">
@@ -462,11 +466,14 @@
 
       function showChampion() {
         const champion = playoffs[3].winner;
-        if (champion) {
-          alert(`Champion: ${champion}`);
-        } else {
-          alert("Final match not yet played.");
-        }
+        const container = document.getElementById("playoffsList");
+        container.innerHTML = `
+          <li class="p-2 sm:p-4 glass">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center">
+              Champion: <span class="yellow">${champion}</span>
+            </h2>
+          </li>
+        `;
       }
 
       function resetLeague() {

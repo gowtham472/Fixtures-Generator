@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CPL Team Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#0e7490] to-[#22c55e] text-white flex items-center justify-center p-6">
+  <div class="bg-[#0f172a]/80 backdrop-blur-md rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-6">
+      <button onclick="window.location.href = './index.html'" class="bg-[#22c55e] text-black font-semibold px-6 py-2 rounded-xl hover:bg-[#16a34a] transition-all">Back</button>
+<h1 class="text-3xl font-bold text-center text-[#22c55e]">CPL Team Generator</h1>
+    <textarea
+      id="nameInput"
+      placeholder="Enter player names separated by commas..."
+      class="w-full h-32 p-4 rounded-xl bg-[#1e293b] text-white placeholder:text-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#22c55e] transition"
+    ></textarea>
+
+    <div class="flex justify-center">
+      <button
+        onclick="generateTeams()"
+        class="bg-[#22c55e] text-black font-semibold px-6 py-2 rounded-xl hover:bg-[#16a34a] transition-all"
+      >
+        Generate Teams
+      </button>
+    </div>
+
+    <div id="error" class="text-red-400 text-center font-semibold"></div>
+
+    <div id="teamsContainer" class="space-y-4">
+      <!-- Teams appear here -->
+    </div>
+  </div>
+
+  <script>
+    function generateTeams() {
+      const input = document.getElementById("nameInput").value;
+      const error = document.getElementById("error");
+      const container = document.getElementById("teamsContainer");
+
+      error.textContent = "";
+      container.innerHTML = "";
+
+      let names = input.split(",").map(n => n.trim()).filter(n => n);
+
+      if (names.length < 2 || names.length % 2 !== 0) {
+        error.textContent = "⚠️ Please enter an even number of player names (minimum 2).";
+        return;
+      }
+
+      // Shuffle names
+      for (let i = names.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [names[i], names[j]] = [names[j], names[i]];
+      }
+
+      for (let i = 0; i < names.length; i += 2) {
+        const team = document.createElement("div");
+        team.className = "bg-[#1e293b] rounded-xl p-4 flex justify-between items-center shadow-md";
+        team.innerHTML = `
+          <span class="text-lg font-semibold text-[#38bdf8]">Team ${i / 2 + 1}</span>
+          <span class="text-white">${names[i]} <span class="text-green-400 font-bold">&</span> ${names[i + 1]}</span>
+        `;
+        container.appendChild(team);
+      }
+    }
+  </script>
+
+</body>
+</html>
